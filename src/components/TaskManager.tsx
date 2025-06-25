@@ -5,23 +5,41 @@ import { Button } from "@/components/ui/button";
 import TaskCard from "./TaskCard";
 import AddTaskModal from "./AddTaskModal";
 import TaskStats from "./TaskStats";
+import AuthModal from "./AuthModal";
 import { Task, TaskPriority } from "@/types/Task";
 import { loadTasks, saveTasks } from "@/utils/taskStorage";
 
 const TaskManager = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
   const [sortBy, setSortBy] = useState<'priority' | 'dueDate' | 'created'>('priority');
+  const [user, setUser] = useState<{username: string, email: string} | null>(null);
 
   useEffect(() => {
     const savedTasks = loadTasks();
+    const savedUser = localStorage.getItem('taskManager_user');
     setTasks(savedTasks);
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
   }, []);
 
   useEffect(() => {
     saveTasks(tasks);
   }, [tasks]);
+
+  const handleLogin = (userData: {username: string, email: string}) => {
+    setUser(userData);
+    localStorage.setItem('taskManager_user', JSON.stringify(userData));
+    setIsAuthModalOpen(false);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('taskManager_user');
+  };
 
   const addTask = (newTask: Omit<Task, 'id' | 'completed' | 'createdAt'>) => {
     const task: Task = {
@@ -80,38 +98,65 @@ const TaskManager = () => {
 
   const filteredTasks = getFilteredTasks();
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-100 max-w-md w-full text-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">مدير المهام اليومية</h1>
+          <p className="text-gray-600 mb-6">سجل دخولك لإدارة مهامك بكفاءة</p>
+          <Button
+            onClick={() => setIsAuthModalOpen(true)}
+            className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium"
+          >
+            تسجيل الدخول
+          </Button>
+        </div>
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onLogin={handleLogin}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-              مدير المهام اليومية
-            </h1>
-            <p className="text-xl text-gray-600 font-medium">
-              نظم مهامك وارفع إنتاجيتك
-            </p>
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 mb-6 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">مدير المهام اليومية</h1>
+              <p className="text-gray-600">مرحباً {user.username}</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="border-gray-200 hover:bg-gray-50"
+            >
+              تسجيل الخروج
+            </Button>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="mb-8">
+        <div className="mb-6">
           <TaskStats tasks={tasks} />
         </div>
 
         {/* Controls */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 mb-8 shadow-xl border border-white/30">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 mb-6 shadow-sm border border-gray-100">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant={filter === 'all' ? 'default' : 'outline'}
                 onClick={() => setFilter('all')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'all' 
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg' 
-                    : 'border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                    ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                    : 'border-gray-200 hover:bg-blue-50 hover:border-blue-300'
                 }`}
               >
                 <Filter className="w-4 h-4 mr-2" />
@@ -120,10 +165,10 @@ const TaskManager = () => {
               <Button
                 variant={filter === 'pending' ? 'default' : 'outline'}
                 onClick={() => setFilter('pending')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'pending' 
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg' 
-                    : 'border-2 border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                    : 'border-gray-200 hover:bg-orange-50 hover:border-orange-300'
                 }`}
               >
                 المهام المعلقة
@@ -131,10 +176,10 @@ const TaskManager = () => {
               <Button
                 variant={filter === 'completed' ? 'default' : 'outline'}
                 onClick={() => setFilter('completed')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filter === 'completed' 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg' 
-                    : 'border-2 border-gray-200 hover:border-green-300 hover:bg-green-50'
+                    ? 'bg-green-500 hover:bg-green-600 text-white' 
+                    : 'border-gray-200 hover:bg-green-50 hover:border-green-300'
                 }`}
               >
                 المهام المكتملة
@@ -142,13 +187,13 @@ const TaskManager = () => {
             </div>
 
             {/* Sort and Add */}
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-3 items-center">
               <div className="flex items-center gap-2">
-                <SortAsc className="w-5 h-5 text-gray-600" />
+                <SortAsc className="w-4 h-4 text-gray-500" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="px-4 py-2 border-2 border-gray-200 rounded-xl bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium"
+                  className="px-3 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 >
                   <option value="priority">ترتيب حسب الأولوية</option>
                   <option value="dueDate">ترتيب حسب التاريخ</option>
@@ -158,9 +203,9 @@ const TaskManager = () => {
 
               <Button
                 onClick={() => setIsAddModalOpen(true)}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium"
               >
-                <Plus className="w-5 h-5 mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 إضافة مهمة
               </Button>
             </div>
@@ -168,18 +213,18 @@ const TaskManager = () => {
         </div>
 
         {/* Task List */}
-        <div className="grid gap-6">
+        <div className="space-y-4">
           {filteredTasks.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-12 shadow-xl border border-white/30">
-                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                  <Plus className="w-16 h-16 text-blue-500" />
+            <div className="text-center py-12">
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-gray-100">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                  <Plus className="w-12 h-12 text-gray-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-700 mb-4">
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
                   {filter === 'completed' ? 'لا توجد مهام مكتملة بعد' : 
                    filter === 'pending' ? 'لا توجد مهام معلقة' : 'لا توجد مهام بعد'}
                 </h3>
-                <p className="text-gray-500 mb-6 text-lg">
+                <p className="text-gray-500 mb-4">
                   {filter === 'all' ? 'أنشئ مهمتك الأولى للبدء!' : 
                    filter === 'pending' ? 'جميع المهام مكتملة! عمل رائع!' : 
                    'أكمل بعض المهام لرؤيتها هنا.'}
@@ -187,9 +232,9 @@ const TaskManager = () => {
                 {filter === 'all' && (
                   <Button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium"
                   >
-                    <Plus className="w-5 h-5 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     أضف مهمتك الأولى
                   </Button>
                 )}
@@ -208,7 +253,6 @@ const TaskManager = () => {
           )}
         </div>
 
-        {/* Add Task Modal */}
         <AddTaskModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}

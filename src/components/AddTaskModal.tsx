@@ -17,9 +17,9 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }: AddTaskModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl bg-white/95 backdrop-blur-xl border-2 border-white/30 rounded-2xl shadow-2xl">
+      <DialogContent className="sm:max-w-2xl bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-lg">
         <DialogHeader className="text-center pb-4">
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl font-bold text-gray-800">
             إضافة مهمة جديدة
           </DialogTitle>
         </DialogHeader>

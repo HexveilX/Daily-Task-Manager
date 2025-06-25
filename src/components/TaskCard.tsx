@@ -21,7 +21,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
     switch (priority) {
       case 'high':
         return {
-          color: 'from-red-500 to-pink-500',
+          color: 'from-red-400 to-red-500',
           bg: 'bg-red-500',
           text: 'text-red-600',
           bgLight: 'bg-red-50',
@@ -30,7 +30,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
         };
       case 'medium':
         return {
-          color: 'from-yellow-500 to-orange-500',
+          color: 'from-yellow-400 to-yellow-500',
           bg: 'bg-yellow-500',
           text: 'text-yellow-600',
           bgLight: 'bg-yellow-50',
@@ -39,7 +39,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
         };
       case 'low':
         return {
-          color: 'from-green-500 to-emerald-500',
+          color: 'from-green-400 to-green-500',
           bg: 'bg-green-500',
           text: 'text-green-600',
           bgLight: 'bg-green-50',
@@ -48,7 +48,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
         };
       default:
         return {
-          color: 'from-gray-500 to-slate-500',
+          color: 'from-gray-400 to-gray-500',
           bg: 'bg-gray-500',
           text: 'text-gray-600',
           bgLight: 'bg-gray-50',
@@ -75,41 +75,41 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
 
   return (
     <>
-      <Card className={`relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] transform ${
+      <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-md ${
         task.completed 
-          ? 'bg-gray-50/80 backdrop-blur-xl border-gray-200 opacity-75' 
-          : 'bg-white/80 backdrop-blur-xl border-white/30 shadow-xl'
-      } ${isOverdue ? 'ring-2 ring-red-300 ring-opacity-50' : ''}`}>
+          ? 'bg-gray-50/80 backdrop-blur-sm border-gray-200 opacity-75' 
+          : 'bg-white/90 backdrop-blur-sm border-gray-100 shadow-sm'
+      } ${isOverdue ? 'ring-1 ring-red-300' : ''}`}>
         
         {/* Priority Indicator */}
-        <div className={`absolute top-0 left-0 w-2 h-full bg-gradient-to-b ${priorityConfig.color}`} />
+        <div className={`absolute top-0 right-0 w-1 h-full bg-gradient-to-b ${priorityConfig.color}`} />
         
-        <div className="p-6">
+        <div className="p-5">
           <div className="flex items-start gap-4">
             {/* Completion Button */}
             <button
               onClick={() => onToggleComplete(task.id)}
-              className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
+              className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                 task.completed
-                  ? 'bg-gradient-to-r from-green-400 to-emerald-500 border-green-400 text-white shadow-lg'
-                  : 'border-gray-300 hover:border-green-400 hover:bg-green-50 hover:shadow-md'
+                  ? 'bg-green-500 border-green-500 text-white'
+                  : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
               }`}
             >
-              {task.completed && <Check className="w-4 h-4" />}
+              {task.completed && <Check className="w-3 h-3" />}
             </button>
 
             {/* Task Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className={`font-bold text-xl mb-3 leading-tight ${
+                  <h3 className={`font-semibold text-lg mb-2 leading-tight ${
                     task.completed ? 'line-through text-gray-500' : 'text-gray-800'
                   }`}>
                     {task.title}
                   </h3>
                   
                   {task.description && (
-                    <p className={`text-base mb-4 leading-relaxed ${
+                    <p className={`text-sm mb-3 leading-relaxed ${
                       task.completed ? 'text-gray-400' : 'text-gray-600'
                     }`}>
                       {task.description}
@@ -117,9 +117,9 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                   )}
 
                   {/* Badges */}
-                  <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Badge 
-                      className={`px-3 py-1 rounded-full bg-gradient-to-r ${priorityConfig.color} text-white font-semibold shadow-md flex items-center gap-1`}
+                      className={`px-2 py-1 text-xs rounded-full bg-gradient-to-r ${priorityConfig.color} text-white font-medium shadow-sm flex items-center gap-1`}
                     >
                       <PriorityIcon className="w-3 h-3" />
                       {task.priority === 'high' ? 'عالية' : task.priority === 'medium' ? 'متوسطة' : 'منخفضة'}
@@ -127,7 +127,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
 
                     {task.dueDate && (
                       <Badge 
-                        className={`px-3 py-1 rounded-full font-semibold flex items-center gap-1 ${
+                        className={`px-2 py-1 text-xs rounded-full font-medium flex items-center gap-1 ${
                           isOverdue ? 'bg-red-100 text-red-700 border border-red-200' :
                           isDueSoon ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
                           'bg-blue-100 text-blue-700 border border-blue-200'
@@ -139,7 +139,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                     )}
 
                     {isOverdue && (
-                      <Badge className="px-3 py-1 rounded-full bg-red-500 text-white font-semibold shadow-md flex items-center gap-1">
+                      <Badge className="px-2 py-1 text-xs rounded-full bg-red-500 text-white font-medium shadow-sm flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
                         متأخرة
                       </Badge>
@@ -148,12 +148,12 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 flex-shrink-0">
+                <div className="flex gap-1 flex-shrink-0">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsEditModalOpen(true)}
-                    className="hover:bg-blue-100 text-blue-600 rounded-xl p-2 transition-all duration-200 hover:shadow-md"
+                    className="hover:bg-blue-100 text-blue-600 rounded-lg p-2 h-8 w-8"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
@@ -161,7 +161,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(task.id)}
-                    className="hover:bg-red-100 text-red-600 rounded-xl p-2 transition-all duration-200 hover:shadow-md"
+                    className="hover:bg-red-100 text-red-600 rounded-lg p-2 h-8 w-8"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import DatePicker from "./DatePicker";
 import { Task, TaskPriority } from "@/types/Task";
 
 interface TaskFormProps {
@@ -40,10 +41,10 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <Label htmlFor="title" className="text-lg font-semibold text-gray-700 mb-2 block">
+          <Label htmlFor="title" className="text-base font-medium text-gray-700 mb-2 block">
             عنوان المهمة *
           </Label>
           <Input
@@ -51,13 +52,13 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
             value={formData.title}
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
             placeholder="أدخل عنوان المهمة..."
-            className="text-lg p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+            className="py-3 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             required
           />
         </div>
 
         <div>
-          <Label htmlFor="description" className="text-lg font-semibold text-gray-700 mb-2 block">
+          <Label htmlFor="description" className="text-base font-medium text-gray-700 mb-2 block">
             الوصف
           </Label>
           <Textarea
@@ -65,14 +66,14 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             placeholder="أضف تفاصيل المهمة (اختياري)..."
-            className="text-base p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none"
-            rows={4}
+            className="py-3 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 resize-none"
+            rows={3}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <Label htmlFor="priority" className="text-lg font-semibold text-gray-700 mb-2 block">
+            <Label htmlFor="priority" className="text-base font-medium text-gray-700 mb-2 block">
               الأولوية
             </Label>
             <Select
@@ -81,37 +82,34 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
                 setFormData(prev => ({ ...prev, priority: value }))
               }
             >
-              <SelectTrigger className="text-lg p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+              <SelectTrigger className="py-3 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white/95 backdrop-blur-xl border-2 border-gray-200 rounded-xl">
-                <SelectItem value="low" className="text-base p-3 hover:bg-green-50">منخفضة</SelectItem>
-                <SelectItem value="medium" className="text-base p-3 hover:bg-yellow-50">متوسطة</SelectItem>
-                <SelectItem value="high" className="text-base p-3 hover:bg-red-50">عالية</SelectItem>
+              <SelectContent className="bg-white border border-gray-200 rounded-lg">
+                <SelectItem value="low" className="hover:bg-green-50">منخفضة</SelectItem>
+                <SelectItem value="medium" className="hover:bg-yellow-50">متوسطة</SelectItem>
+                <SelectItem value="high" className="hover:bg-red-50">عالية</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="dueDate" className="text-lg font-semibold text-gray-700 mb-2 block">
+            <Label htmlFor="dueDate" className="text-base font-medium text-gray-700 mb-2 block">
               تاريخ الانتهاء
             </Label>
-            <Input
-              id="dueDate"
-              type="date"
+            <DatePicker
               value={formData.dueDate}
-              onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-              className="text-lg p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-              min={new Date().toISOString().split('T')[0]}
+              onChange={(date) => setFormData(prev => ({ ...prev, dueDate: date }))}
+              placeholder="اختر تاريخ الانتهاء"
             />
           </div>
         </div>
 
-        <div className="flex gap-4 pt-6">
+        <div className="flex gap-3 pt-4">
           <Button
             type="submit"
             disabled={!formData.title.trim()}
-            className="flex-1 py-4 text-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitLabel}
           </Button>
@@ -119,7 +117,7 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
             type="button" 
             variant="outline" 
             onClick={onCancel} 
-            className="flex-1 py-4 text-lg font-semibold border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200"
+            className="flex-1 py-3 border-gray-200 rounded-lg hover:bg-gray-50"
           >
             إلغاء
           </Button>
