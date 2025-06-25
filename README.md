@@ -1,73 +1,82 @@
-# Welcome to your Lovable project
 
-## Project info
+# 📝 Daily Task Manager
 
-**URL**: https://lovable.dev/projects/f28fa3b2-6a47-4743-a63f-9756efdbb626
+A modern and minimal web app to help users manage their daily tasks, stay organized, and boost productivity. Built with simplicity in mind, this project offers essential task management features using modern web technologies.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+- ✅ Add, edit, and delete tasks
+- 📅 Set due dates and priorities
+- 🌓 Light/Dark mode support (optional)
+- 🛎️ Reminders and notifications (optional)
+- 📋 Clean and responsive UI
+- 🔍 View tasks by date or priority
+- 📦 Data storage with Firebase
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f28fa3b2-6a47-4743-a63f-9756efdbb626) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🖥️ Tech Stack
 
-**Use your preferred IDE**
+- **Frontend:** HTML, CSS, JavaScript (Optional: React + Tailwind CSS)
+- **Backend / Database:** Firebase (Authentication + Firestore)
+- **Hosting:** Firebase Hosting / GitHub Pages (optional)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📸 Screenshots
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+> Add your UI screenshots here  
+> Example:
+```
+![Task Dashboard](screenshots/dashboard.png)
+![Add Task Modal](screenshots/add-task.png)
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔧 Installation
 
-**Use GitHub Codespaces**
+```bash
+# Clone the repository
+git clone https://github.com/HexveilX/daily-task-manager.git
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Open the folder
+cd daily-task-manager
 
-## What technologies are used for this project?
+# Open index.html in your browser (if using plain JS)
+# OR
+# Run your development server if using React (Vite / Create React App / etc.)
+```
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🧠 What I Learned
 
-## How can I deploy this project?
+- Firebase Authentication & Firestore integration
+- UI/UX principles and responsive design
+- State management and data binding
+- Date formatting and modal design
 
-Simply open [Lovable](https://lovable.dev/projects/f28fa3b2-6a47-4743-a63f-9756efdbb626) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🙋‍♂️ Author
 
-Yes, you can!
+- **Name:** Zyad  
+- **GitHub:** [@HexveilX](https://github.com/HexveilX)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📃 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## 💡 Future Improvements
+
+- ✅ Add user accounts with username
+- ✅ Drag and drop task sorting
+- ✅ Custom themes
+- ✅ Mobile-first experience
