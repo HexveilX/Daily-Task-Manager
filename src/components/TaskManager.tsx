@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Plus, Filter, SortAsc } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import TaskCard from "./TaskCard";
 import AddTaskModal from "./AddTaskModal";
 import TaskStats from "./TaskStats";
 import AuthModal from "./AuthModal";
+import BackgroundEffects from "./BackgroundEffects";
 import { Task, TaskPriority } from "@/types/Task";
 import { loadTasks, saveTasks } from "@/utils/taskStorage";
 
@@ -104,17 +104,20 @@ const TaskManager = () => {
     "لا تؤجل عمل اليوم إلى الغد",
     "البداية هي أهم جزء في العمل",
     "الطريق إلى النجاح يبدأ بخطوة واحدة",
-    "اجعل كل يوم تحفة فنية من الإنجازات"
+    "اجعل كل يوم تحفة فنية من الإنجازات",
+    "الإنجاز الصغير أفضل من الأحلام الكبيرة",
+    "كل خطوة تقربك من هدفك تستحق الاحتفال"
   ];
 
   const todayQuote = motivationalQuotes[new Date().getDay() % motivationalQuotes.length];
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-        <div className="bg-gradient-to-br from-slate-800/90 to-purple-800/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-slate-700/50 max-w-md w-full text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative">
+        <BackgroundEffects />
+        <div className="bg-gradient-to-br from-slate-800/90 to-purple-800/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-slate-700/50 max-w-md w-full text-center relative z-10">
           <div className="mb-6">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Plus className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
@@ -125,7 +128,7 @@ const TaskManager = () => {
           </div>
           <Button
             onClick={() => setIsAuthModalOpen(true)}
-            className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-xl font-medium shadow-lg"
+            className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-xl font-medium shadow-lg hover:shadow-purple-500/30 transition-all duration-300"
           >
             تسجيل الدخول
           </Button>
@@ -140,8 +143,9 @@ const TaskManager = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="container mx-auto px-4 py-6 max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative">
+      <BackgroundEffects />
+      <div className="container mx-auto px-4 py-6 max-w-5xl relative z-10">
         {/* Header */}
         <div className="bg-gradient-to-br from-slate-800/90 to-purple-800/90 backdrop-blur-xl rounded-3xl p-6 mb-6 shadow-xl border border-slate-700/50">
           <div className="flex justify-between items-start">
