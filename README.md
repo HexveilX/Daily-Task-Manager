@@ -25,16 +25,6 @@ A modern and minimal web app to help users manage their daily tasks, stay organi
 
 ---
 
-## 📸 Screenshots
-
-> Add your UI screenshots here  
-> Example:
-```
-![Task Dashboard](screenshots/dashboard.png)
-![Add Task Modal](screenshots/add-task.png)
-```
-
----
 
 ## 🔧 Installation
 
