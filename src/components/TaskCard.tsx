@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Check, Clock, Edit2, Trash2, AlertCircle, Calendar, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,7 +13,7 @@ interface TaskCardProps {
   onDelete: (id: string) => void;
 }
 
-const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps) => {
+const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const getPriorityConfig = (priority: string) => {
@@ -75,7 +74,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
 
   return (
     <>
-      <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
+      <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:scale-[1.02] ${
         task.completed 
           ? 'bg-gradient-to-br from-slate-800/50 to-slate-700/50 backdrop-blur-xl border-slate-600/50 opacity-75' 
           : 'bg-gradient-to-br from-slate-800/90 to-purple-800/90 backdrop-blur-xl border-slate-700/50 shadow-lg hover:shadow-purple-500/20'
@@ -139,7 +138,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                     )}
 
                     {isOverdue && (
-                      <Badge className="px-2 py-1 text-xs rounded-full bg-red-500 text-white font-medium shadow-lg flex items-center gap-1">
+                      <Badge className="px-2 py-1 text-xs rounded-full bg-red-500 text-white font-medium shadow-lg flex items-center gap-1 animate-pulse">
                         <AlertCircle className="w-3 h-3" />
                         متأخرة
                       </Badge>
@@ -153,7 +152,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsEditModalOpen(true)}
-                    className="hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 rounded-lg p-2 h-8 w-8"
+                    className="hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 rounded-lg p-2 h-8 w-8 transition-all duration-200"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
@@ -161,7 +160,7 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(task.id)}
-                    className="hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg p-2 h-8 w-8"
+                    className="hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg p-2 h-8 w-8 transition-all duration-200"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -180,6 +179,8 @@ const TaskCard = ({ task, onToggleComplete, onUpdate, onDelete }: TaskCardProps)
       />
     </>
   );
-};
+});
+
+TaskCard.displayName = 'TaskCard';
 
 export default TaskCard;
