@@ -68,21 +68,21 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
       {statItems.map((stat) => {
         const Icon = stat.icon;
         return (
           <Card 
             key={stat.label} 
-            className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg"
+            className="p-3 sm:p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg transition-all duration-200 rounded-xl"
           >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <Icon className={`w-5 h-5 ${stat.color}`} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-right">
+              <div className={`p-2 rounded-lg ${stat.bgColor} flex-shrink-0`}>
+                <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${stat.color}`} />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{stat.value}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-gray-200 leading-tight">{stat.value}</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-tight">{stat.label}</p>
               </div>
             </div>
           </Card>

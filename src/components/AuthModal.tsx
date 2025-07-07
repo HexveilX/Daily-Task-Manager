@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,17 +35,20 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl">
+      <DialogContent className="w-[95vw] max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl mx-4">
         <DialogHeader className="text-center pb-4">
-          <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
             {isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}
           </DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-300 mt-2">
+            {isLogin ? 'سجل دخولك لإدارة مهامك' : 'أنشئ حساباً جديداً للبدء'}
+          </DialogDescription>
         </DialogHeader>
         
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="username" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              <Label htmlFor="username" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 اسم المستخدم *
               </Label>
               <div className="relative">
@@ -62,7 +65,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              <Label htmlFor="email" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 البريد الإلكتروني *
               </Label>
               <div className="relative">
@@ -80,7 +83,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              <Label htmlFor="password" className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 كلمة المرور *
               </Label>
               <Input
@@ -128,7 +131,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium"
+              className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium text-sm sm:text-base"
             >
               {isLogin ? 'ليس لديك حساب؟ أنشئ حساباً جديداً' : 'لديك حساب؟ سجل دخولك'}
             </button>

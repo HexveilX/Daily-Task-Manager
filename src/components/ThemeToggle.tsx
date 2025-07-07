@@ -39,11 +39,11 @@ const ThemeToggle = () => {
   const getIcon = () => {
     switch (theme) {
       case 'light':
-        return <Sun className="w-4 h-4" />;
+        return <Sun className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'dark':
-        return <Moon className="w-4 h-4" />;
+        return <Moon className="w-4 h-4 sm:w-5 sm:h-5" />;
       default:
-        return <Monitor className="w-4 h-4" />;
+        return <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />;
     }
   };
 
@@ -53,32 +53,32 @@ const ThemeToggle = () => {
         <Button
           variant="outline"
           size="sm"
-          className="border-gray-300 hover:bg-gray-50 text-gray-700 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-300"
+          className="border-gray-300 hover:bg-gray-50 text-gray-700 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-300 h-10 w-10 sm:h-8 sm:w-8 p-0 rounded-lg"
         >
           {getIcon()}
           <span className="sr-only">تغيير المظهر</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl min-w-[140px]">
         <DropdownMenuItem 
           onClick={() => handleThemeChange('light')}
-          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 px-4 cursor-pointer"
         >
-          <Sun className="w-4 h-4 mr-2" />
+          <Sun className="w-4 h-4 mr-3" />
           فاتح
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => handleThemeChange('dark')}
-          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 px-4 cursor-pointer"
         >
-          <Moon className="w-4 h-4 mr-2" />
+          <Moon className="w-4 h-4 mr-3" />
           داكن
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => handleThemeChange('system')}
-          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className="hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 py-3 px-4 cursor-pointer"
         >
-          <Monitor className="w-4 h-4 mr-2" />
+          <Monitor className="w-4 h-4 mr-3" />
           تلقائي
         </DropdownMenuItem>
       </DropdownMenuContent>

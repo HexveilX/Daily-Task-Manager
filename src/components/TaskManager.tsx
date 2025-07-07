@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Plus, Filter, SortAsc, Search, Download, Upload, Calendar, BarChart3 } from "lucide-react";
+import { Plus, Filter, SortAsc, Search, Download, Upload, Calendar, BarChart3, Menu, X, Settings, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ const TaskManager = () => {
   const [sortBy, setSortBy] = useState<'priority' | 'dueDate' | 'created'>('priority');
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<{username: string, email: string} | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Load initial data
   useEffect(() => {
@@ -238,16 +239,16 @@ const TaskManager = () => {
         <div className="absolute top-4 right-4">
           <ThemeToggle />
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 max-w-md w-full text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 dark:border-gray-700 max-w-md w-full text-center">
           <div className="mb-6">
-            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
-              <BarChart3 className="w-10 h-10 text-white" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
+              <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               مدير المهام اليومية
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-2">سجل دخولك لإدارة مهامك بكفاءة</p>
-            <p className="text-blue-600 dark:text-blue-400 text-sm italic bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+            <p className="text-gray-600 dark:text-gray-300 mb-2 text-sm sm:text-base">سجل دخولك لإدارة مهامك بكفاءة</p>
+            <p className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm italic bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
               "{todayQuote}"
             </p>
           </div>
@@ -269,20 +270,23 @@ const TaskManager = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
-        {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6 shadow-lg border border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-                مدير المهام اليومية
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 mb-2">مرحباً {user.username} 👋</p>
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-                <p className="text-blue-600 dark:text-blue-400 text-sm italic">"{todayQuote}"</p>
+      {/* Top Navigation Bar */}
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <BarChart3 className="w-6 h-6 text-white" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">مدير المهام</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400">مرحباً {user.username} 👋</p>
               </div>
             </div>
-            <div className="flex gap-2 flex-wrap">
+
+            {/* Desktop Controls */}
+            <div className="hidden sm:flex items-center gap-3">
               <ThemeToggle />
               <Button
                 variant="outline"
@@ -318,22 +322,95 @@ const TaskManager = () => {
                 onClick={handleLogout}
                 className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
               >
+                <LogOut className="w-4 h-4 mr-2" />
                 تسجيل الخروج
               </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="sm:hidden flex items-center gap-2">
+              <ThemeToggle />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="border-gray-300 dark:border-gray-600 h-10 w-10 p-0 rounded-lg"
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="sm:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExport}
+                  disabled={tasks.length === 0}
+                  className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 justify-start"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  تصدير المهام
+                </Button>
+                <label className="cursor-pointer">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 justify-start w-full"
+                    asChild
+                  >
+                    <span>
+                      <Upload className="w-4 h-4 mr-2" />
+                      استيراد المهام
+                    </span>
+                  </Button>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImport}
+                    className="hidden"
+                  />
+                </label>
+                <Button
+                  variant="outline"
+                  onClick={handleLogout}
+                  className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 justify-start col-span-2"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  تسجيل الخروج
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-4 sm:py-6 max-w-6xl">
+        {/* Welcome Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-center sm:text-right">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+              مرحباً {user.username} 👋
+            </h2>
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+              <p className="text-blue-600 dark:text-blue-400 text-sm sm:text-base italic">"{todayQuote}"</p>
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <TaskStats tasks={tasks} />
         </div>
 
         {/* Search and Controls */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 mb-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 mb-4 sm:mb-6 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col gap-4">
             {/* Search */}
-            <div className="relative max-w-md">
+            <div className="relative w-full">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
               <Input
                 placeholder="البحث في المهام..."
@@ -343,22 +420,22 @@ const TaskManager = () => {
               />
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <div className="flex flex-col gap-4">
               {/* Filter Buttons */}
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant={filter === 'all' ? 'default' : 'outline'}
                   onClick={() => setFilter('all')}
                   size="sm"
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-3 py-2 rounded-lg font-medium text-xs sm:text-sm ${
                     filter === 'all' 
                       ? 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white' 
                       : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  <Filter className="w-4 h-4 mr-2" />
+                  <Filter className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   الكل
-                  <Badge variant="secondary" className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Badge variant="secondary" className="mr-1 sm:mr-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                     {filterCounts.all}
                   </Badge>
                 </Button>
@@ -367,15 +444,15 @@ const TaskManager = () => {
                   variant={filter === 'today' ? 'default' : 'outline'}
                   onClick={() => setFilter('today')}
                   size="sm"
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-3 py-2 rounded-lg font-medium text-xs sm:text-sm ${
                     filter === 'today' 
                       ? 'bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700 text-white' 
                       : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  <Calendar className="w-4 h-4 mr-2" />
+                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   اليوم
-                  <Badge variant="secondary" className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Badge variant="secondary" className="mr-1 sm:mr-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                     {filterCounts.today}
                   </Badge>
                 </Button>
@@ -384,14 +461,14 @@ const TaskManager = () => {
                   variant={filter === 'pending' ? 'default' : 'outline'}
                   onClick={() => setFilter('pending')}
                   size="sm"
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-3 py-2 rounded-lg font-medium text-xs sm:text-sm ${
                     filter === 'pending' 
                       ? 'bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white' 
                       : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   المعلقة
-                  <Badge variant="secondary" className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Badge variant="secondary" className="mr-1 sm:mr-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                     {filterCounts.pending}
                   </Badge>
                 </Button>
@@ -400,14 +477,14 @@ const TaskManager = () => {
                   variant={filter === 'overdue' ? 'default' : 'outline'}
                   onClick={() => setFilter('overdue')}
                   size="sm"
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-3 py-2 rounded-lg font-medium text-xs sm:text-sm ${
                     filter === 'overdue' 
                       ? 'bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white' 
                       : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   متأخرة
-                  <Badge variant="secondary" className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Badge variant="secondary" className="mr-1 sm:mr-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                     {filterCounts.overdue}
                   </Badge>
                 </Button>
@@ -416,27 +493,27 @@ const TaskManager = () => {
                   variant={filter === 'completed' ? 'default' : 'outline'}
                   onClick={() => setFilter('completed')}
                   size="sm"
-                  className={`px-4 py-2 rounded-lg font-medium ${
+                  className={`px-3 py-2 rounded-lg font-medium text-xs sm:text-sm ${
                     filter === 'completed' 
                       ? 'bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white' 
                       : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   المكتملة
-                  <Badge variant="secondary" className="ml-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Badge variant="secondary" className="mr-1 sm:mr-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs">
                     {filterCounts.completed}
                   </Badge>
                 </Button>
               </div>
 
               {/* Sort and Add */}
-              <div className="flex gap-3 items-center">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                   <SortAsc className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 text-sm"
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 text-sm flex-1 sm:flex-none"
                   >
                     <option value="priority">ترتيب حسب الأولوية</option>
                     <option value="dueDate">ترتيب حسب التاريخ</option>
@@ -446,7 +523,7 @@ const TaskManager = () => {
 
                 <Button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   إضافة مهمة
@@ -459,12 +536,12 @@ const TaskManager = () => {
         {/* Task List */}
         <div className="space-y-4">
           {filteredTasks.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center">
-                  <Plus className="w-12 h-12 text-blue-500 dark:text-blue-400" />
+            <div className="text-center py-8 sm:py-12">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center">
+                  <Plus className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 dark:text-blue-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
                   {searchQuery ? 'لا توجد نتائج للبحث' :
                    filter === 'completed' ? 'لا توجد مهام مكتملة بعد' : 
                    filter === 'pending' ? 'لا توجد مهام معلقة' : 
@@ -472,7 +549,7 @@ const TaskManager = () => {
                    filter === 'overdue' ? 'لا توجد مهام متأخرة' :
                    'لا توجد مهام بعد'}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
                   {searchQuery ? `جرب البحث عن شيء آخر` :
                    filter === 'all' ? 'أنشئ مهمتك الأولى للبدء!' : 
                    filter === 'pending' ? 'جميع المهام مكتملة! عمل رائع!' : 

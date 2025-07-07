@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import TaskForm from "./TaskForm";
 import { Task } from "@/types/Task";
 
@@ -17,11 +17,14 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdateTask }: EditTaskModalPro
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl mx-4">
         <DialogHeader className="text-center pb-4">
-          <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
             تعديل المهمة
           </DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-300 mt-2">
+            قم بتعديل تفاصيل المهمة وحفظ التغييرات
+          </DialogDescription>
         </DialogHeader>
         
         <TaskForm
