@@ -72,9 +72,9 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
     <>
       <Card className={`relative overflow-hidden border-2 ${
         task.completed 
-          ? 'bg-slate-100 border-slate-300 opacity-60' 
-          : 'bg-white border-slate-200 hover:border-blue-300'
-      } ${isOverdue ? 'border-red-400 bg-red-50' : ''}`}>
+          ? 'bg-slate-100 dark:bg-gray-700 border-slate-300 dark:border-gray-600 opacity-60' 
+          : 'bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
+      } ${isOverdue ? 'border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : ''}`}>
         
         {/* Priority Indicator */}
         <div className={`absolute top-0 right-0 w-1 h-full ${priorityConfig.color}`} />
@@ -87,7 +87,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
               className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                 task.completed
                   ? 'bg-green-500 border-green-500 text-white'
-                  : 'border-slate-400 hover:border-green-500 hover:bg-green-50'
+                  : 'border-slate-400 dark:border-gray-500 hover:border-green-500 dark:hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20'
               }`}
             >
               {task.completed && <Check className="w-3 h-3" />}
@@ -98,14 +98,14 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h3 className={`font-semibold text-lg mb-2 leading-tight ${
-                    task.completed ? 'line-through text-slate-500' : 'text-slate-800'
+                    task.completed ? 'line-through text-slate-500 dark:text-gray-400' : 'text-slate-800 dark:text-gray-200'
                   }`}>
                     {task.title}
                   </h3>
                   
                   {task.description && (
                     <p className={`text-sm mb-3 leading-relaxed ${
-                      task.completed ? 'text-slate-400' : 'text-slate-600'
+                      task.completed ? 'text-slate-400 dark:text-gray-500' : 'text-slate-600 dark:text-gray-300'
                     }`}>
                       {task.description}
                     </p>
@@ -148,7 +148,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsEditModalOpen(true)}
-                    className="hover:bg-blue-100 text-blue-600 hover:text-blue-700 rounded-lg p-2 h-8 w-8"
+                    className="hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 rounded-lg p-2 h-8 w-8"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
@@ -156,7 +156,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(task.id)}
-                    className="hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg p-2 h-8 w-8"
+                    className="hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 rounded-lg p-2 h-8 w-8"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

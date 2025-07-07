@@ -35,52 +35,52 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white border border-gray-200 rounded-2xl shadow-xl">
+      <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl">
         <DialogHeader className="text-center pb-4">
-          <DialogTitle className="text-2xl font-bold text-gray-800">
+          <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {isLogin ? 'تسجيل الدخول' : 'إنشاء حساب جديد'}
           </DialogTitle>
         </DialogHeader>
         
-        <div className="bg-gray-50 rounded-xl p-6">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="username" className="text-base font-medium text-gray-700 mb-2 block">
+              <Label htmlFor="username" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 اسم المستخدم *
               </Label>
               <div className="relative">
-                <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <User className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
                 <Input
                   id="username"
                   value={formData.username}
                   onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                   placeholder="أدخل اسم المستخدم..."
-                  className="pr-10 py-3 border-gray-300 bg-white text-gray-800 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="pr-10 py-3 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-base font-medium text-gray-700 mb-2 block">
+              <Label htmlFor="email" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 البريد الإلكتروني *
               </Label>
               <div className="relative">
-                <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="أدخل البريد الإلكتروني..."
-                  className="pr-10 py-3 border-gray-300 bg-white text-gray-800 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="pr-10 py-3 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-base font-medium text-gray-700 mb-2 block">
+              <Label htmlFor="password" className="text-base font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                 كلمة المرور *
               </Label>
               <Input
@@ -89,7 +89,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                 placeholder="أدخل كلمة المرور..."
-                className="py-3 border-gray-300 bg-white text-gray-800 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="py-3 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800"
                 required
               />
             </div>
@@ -98,7 +98,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
               <Button
                 type="submit"
                 disabled={!formData.username.trim() || !formData.email.trim() || !formData.password.trim()}
-                className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLogin ? (
                   <>
@@ -117,18 +117,18 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
                 type="button" 
                 variant="outline" 
                 onClick={onClose} 
-                className="w-full py-3 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="w-full py-3 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 إلغاء
               </Button>
             </div>
           </form>
 
-          <div className="text-center mt-4 pt-4 border-t border-gray-200">
+          <div className="text-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-500 hover:text-blue-600 font-medium"
+              className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium"
             >
               {isLogin ? 'ليس لديك حساب؟ أنشئ حساباً جديداً' : 'لديك حساب؟ سجل دخولك'}
             </button>

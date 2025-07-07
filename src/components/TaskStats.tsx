@@ -34,36 +34,36 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
       label: "إجمالي المهام",
       value: stats.totalTasks,
       icon: BarChart3,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      color: "text-blue-600 dark:text-blue-400",
+      bgColor: "bg-blue-100 dark:bg-blue-900/30",
     },
     {
       label: "مكتملة",
       value: stats.completedTasks,
       icon: CheckCircle2,
-      color: "text-green-600",
-      bgColor: "bg-green-100",
+      color: "text-green-600 dark:text-green-400",
+      bgColor: "bg-green-100 dark:bg-green-900/30",
     },
     {
       label: "معلقة",
       value: stats.pendingTasks,
       icon: Clock,
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-100",
+      color: "text-yellow-600 dark:text-yellow-400",
+      bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
     },
     {
       label: "متأخرة",
       value: stats.overdueTasks,
       icon: AlertTriangle,
-      color: "text-red-600",
-      bgColor: "bg-red-100",
+      color: "text-red-600 dark:text-red-400",
+      bgColor: "bg-red-100 dark:bg-red-900/30",
     },
     {
       label: "معدل الإنجاز",
       value: `${stats.completionRate}%`,
       icon: TrendingUp,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100",
+      color: "text-purple-600 dark:text-purple-400",
+      bgColor: "bg-purple-100 dark:bg-purple-900/30",
     },
   ];
 
@@ -74,15 +74,15 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
         return (
           <Card 
             key={stat.label} 
-            className="p-4 bg-white border border-gray-200 hover:shadow-md"
+            className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg"
           >
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-                <p className="text-sm text-gray-600">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">{stat.value}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</p>
               </div>
             </div>
           </Card>
