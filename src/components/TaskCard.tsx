@@ -20,38 +20,34 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
     switch (priority) {
       case 'high':
         return {
-          color: 'from-red-500 to-pink-500',
-          bg: 'bg-red-500',
-          text: 'text-red-400',
-          bgLight: 'bg-red-500/10',
-          borderLight: 'border-red-500/30',
+          color: 'bg-red-500',
+          text: 'text-red-100',
+          bgLight: 'bg-red-500/20',
+          borderLight: 'border-red-400',
           icon: AlertCircle
         };
       case 'medium':
         return {
-          color: 'from-yellow-500 to-orange-500',
-          bg: 'bg-yellow-500',
-          text: 'text-yellow-400',
-          bgLight: 'bg-yellow-500/10',
-          borderLight: 'border-yellow-500/30',
+          color: 'bg-yellow-500',
+          text: 'text-yellow-100',
+          bgLight: 'bg-yellow-500/20',
+          borderLight: 'border-yellow-400',
           icon: Clock
         };
       case 'low':
         return {
-          color: 'from-green-500 to-emerald-500',
-          bg: 'bg-green-500',
-          text: 'text-green-400',
-          bgLight: 'bg-green-500/10',
-          borderLight: 'border-green-500/30',
+          color: 'bg-green-500',
+          text: 'text-green-100',
+          bgLight: 'bg-green-500/20',
+          borderLight: 'border-green-400',
           icon: Flag
         };
       default:
         return {
-          color: 'from-slate-500 to-gray-500',
-          bg: 'bg-slate-500',
-          text: 'text-slate-400',
-          bgLight: 'bg-slate-500/10',
-          borderLight: 'border-slate-500/30',
+          color: 'bg-slate-500',
+          text: 'text-slate-100',
+          bgLight: 'bg-slate-500/20',
+          borderLight: 'border-slate-400',
           icon: Clock
         };
     }
@@ -74,24 +70,24 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
 
   return (
     <>
-      <Card className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:scale-[1.02] ${
+      <Card className={`relative overflow-hidden border-2 ${
         task.completed 
-          ? 'bg-gradient-to-br from-slate-800/50 to-slate-700/50 backdrop-blur-xl border-slate-600/50 opacity-75' 
-          : 'bg-gradient-to-br from-slate-800/90 to-purple-800/90 backdrop-blur-xl border-slate-700/50 shadow-lg hover:shadow-purple-500/20'
-      } ${isOverdue ? 'ring-1 ring-red-400/50' : ''}`}>
+          ? 'bg-slate-100 border-slate-300 opacity-60' 
+          : 'bg-white border-slate-200 hover:border-blue-300'
+      } ${isOverdue ? 'border-red-400 bg-red-50' : ''}`}>
         
         {/* Priority Indicator */}
-        <div className={`absolute top-0 right-0 w-1 h-full bg-gradient-to-b ${priorityConfig.color}`} />
+        <div className={`absolute top-0 right-0 w-1 h-full ${priorityConfig.color}`} />
         
         <div className="p-5">
           <div className="flex items-start gap-4">
             {/* Completion Button */}
             <button
               onClick={() => onToggleComplete(task.id)}
-              className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+              className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                 task.completed
-                  ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30'
-                  : 'border-slate-500 hover:border-green-400 hover:bg-green-500/10 hover:shadow-lg hover:shadow-green-500/20'
+                  ? 'bg-green-500 border-green-500 text-white'
+                  : 'border-slate-400 hover:border-green-500 hover:bg-green-50'
               }`}
             >
               {task.completed && <Check className="w-3 h-3" />}
@@ -102,14 +98,14 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h3 className={`font-semibold text-lg mb-2 leading-tight ${
-                    task.completed ? 'line-through text-slate-500' : 'text-slate-200'
+                    task.completed ? 'line-through text-slate-500' : 'text-slate-800'
                   }`}>
                     {task.title}
                   </h3>
                   
                   {task.description && (
                     <p className={`text-sm mb-3 leading-relaxed ${
-                      task.completed ? 'text-slate-600' : 'text-slate-300'
+                      task.completed ? 'text-slate-400' : 'text-slate-600'
                     }`}>
                       {task.description}
                     </p>
@@ -118,7 +114,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                   {/* Badges */}
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge 
-                      className={`px-2 py-1 text-xs rounded-full bg-gradient-to-r ${priorityConfig.color} text-white font-medium shadow-lg flex items-center gap-1`}
+                      className={`px-3 py-1 text-xs rounded-full ${priorityConfig.color} ${priorityConfig.text} font-medium flex items-center gap-1`}
                     >
                       <PriorityIcon className="w-3 h-3" />
                       {task.priority === 'high' ? 'عالية' : task.priority === 'medium' ? 'متوسطة' : 'منخفضة'}
@@ -126,10 +122,10 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
 
                     {task.dueDate && (
                       <Badge 
-                        className={`px-2 py-1 text-xs rounded-full font-medium flex items-center gap-1 ${
-                          isOverdue ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
-                          isDueSoon ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
-                          'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        className={`px-3 py-1 text-xs rounded-full font-medium flex items-center gap-1 ${
+                          isOverdue ? 'bg-red-500 text-white' :
+                          isDueSoon ? 'bg-yellow-500 text-white' :
+                          'bg-blue-500 text-white'
                         }`}
                       >
                         <Calendar className="w-3 h-3" />
@@ -138,7 +134,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                     )}
 
                     {isOverdue && (
-                      <Badge className="px-2 py-1 text-xs rounded-full bg-red-500 text-white font-medium shadow-lg flex items-center gap-1 animate-pulse">
+                      <Badge className="px-3 py-1 text-xs rounded-full bg-red-600 text-white font-medium flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
                         متأخرة
                       </Badge>
@@ -152,7 +148,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsEditModalOpen(true)}
-                    className="hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 rounded-lg p-2 h-8 w-8 transition-all duration-200"
+                    className="hover:bg-blue-100 text-blue-600 hover:text-blue-700 rounded-lg p-2 h-8 w-8"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
@@ -160,7 +156,7 @@ const TaskCard = memo(({ task, onToggleComplete, onUpdate, onDelete }: TaskCardP
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(task.id)}
-                    className="hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg p-2 h-8 w-8 transition-all duration-200"
+                    className="hover:bg-red-100 text-red-600 hover:text-red-700 rounded-lg p-2 h-8 w-8"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
