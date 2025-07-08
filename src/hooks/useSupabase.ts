@@ -19,19 +19,7 @@ export const useSupabase = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          
-          if (profile) {
-            setUser({
-              id: profile.id,
-              username: profile.username || profile.full_name || 'User',
-              email: profile.email || session.user.email || ''
-            });
-          }
+          await loadUserProfile(session.user.id, session.user.email || '');
         }
       } catch (error) {
         console.error('Session check error:', error);
@@ -45,19 +33,7 @@ export const useSupabase = () => {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        
-        if (profile) {
-          setUser({
-            id: profile.id,
-            username: profile.username || profile.full_name || 'User',
-            email: profile.email || session.user.email || ''
-          });
-        }
+        await loadUserProfile(session.user.id, session.user.email || '');
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
       }
@@ -66,6 +42,53 @@ export const useSupabase = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const loadUserProfile = async (userId: string, email: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+        throw error;
+      }
+
+      if (profile) {
+        setUser({
+          id: profile.id,
+          username: profile.username || profile.full_name || 'User',
+          email: profile.email || email
+        });
+      } else {
+        // Profile doesn't exist, create one
+        const username = email.split('@')[0];
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            username,
+            full_name: username,
+            email,
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+        } else if (newProfile) {
+          setUser({
+            id: newProfile.id,
+            username: newProfile.username || username,
+            email: newProfile.email || email
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
@@ -83,33 +106,18 @@ export const useSupabase = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Create profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            username,
-            full_name: username,
-            email,
-          });
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-        }
-
-        setUser({
-          id: data.user.id,
-          username,
-          email
-        });
-
         toast.success('تم إنشاء الحساب بنجاح!');
         return { success: true };
       }
+
+      return { success: false, error: 'فشل في إنشاء الحساب' };
     } catch (error: any) {
       console.error('Sign up error:', error);
-      toast.error('فشل في إنشاء الحساب: ' + error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.message === 'User already registered' 
+        ? 'هذا البريد الإلكتروني مسجل بالفعل'
+        : error.message;
+      toast.error('فشل في إنشاء الحساب: ' + errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 
@@ -123,27 +131,18 @@ export const useSupabase = () => {
       if (error) throw error;
 
       if (data.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        if (profile) {
-          setUser({
-            id: profile.id,
-            username: profile.username || profile.full_name || 'User',
-            email: profile.email || data.user.email || ''
-          });
-        }
-
         toast.success('تم تسجيل الدخول بنجاح!');
         return { success: true };
       }
+
+      return { success: false, error: 'فشل في تسجيل الدخول' };
     } catch (error: any) {
       console.error('Sign in error:', error);
-      toast.error('فشل في تسجيل الدخول: ' + error.message);
-      return { success: false, error: error.message };
+      const errorMessage = error.message === 'Invalid login credentials'
+        ? 'بيانات الدخول غير صحيحة'
+        : error.message;
+      toast.error('فشل في تسجيل الدخول: ' + errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 

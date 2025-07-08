@@ -55,14 +55,9 @@ const TaskManager = () => {
   }, [tasks]);
 
   const handleLogin = useCallback(async (userData: {username: string, email: string, password?: string}) => {
-    if (userData.password) {
-      // This is a sign in
-      await signIn(userData.email, userData.password);
-    } else {
-      // This is a sign up - we need to handle this differently
-      // For now, we'll just close the modal since the auth is handled in AuthModal
-      setIsAuthModalOpen(false);
-    }
+    // This callback is no longer needed since auth is handled in AuthModal
+    // Just close the modal when called
+    setIsAuthModalOpen(false);
   }, [signIn]);
 
   const handleLogout = useCallback(async () => {
@@ -143,19 +138,20 @@ const TaskManager = () => {
     const file = event.target.files?.[0];
     if (file) {
       importTasks(file, async (importedTasks) => {
-        // Save imported tasks to Supabase
+        let successCount = 0;
         for (const task of importedTasks) {
-          await saveTask({
+          const savedTask = await saveTask({
             title: task.title,
             description: task.description,
             priority: task.priority,
             dueDate: task.dueDate,
             completed: task.completed
           });
+          if (savedTask) successCount++;
         }
         // Reload tasks from database
         await loadUserTasks();
-        toast.success(`تم استيراد ${importedTasks.length} مهمة بنجاح 📥`);
+        toast.success(`تم استيراد ${successCount} مهمة بنجاح 📥`);
       }, (error) => {
         toast.error('فشل في استيراد المهام ❌');
       });

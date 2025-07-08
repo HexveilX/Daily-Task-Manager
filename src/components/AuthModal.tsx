@@ -35,6 +35,10 @@ const AuthModal = ({ isOpen, onClose, onLogin, onSignUp, onSignIn }: AuthModalPr
       return;
     }
 
+    if (formData.password.length < 6) {
+      setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -48,7 +52,7 @@ const AuthModal = ({ isOpen, onClose, onLogin, onSignUp, onSignIn }: AuthModalPr
 
       if (result.success) {
         setFormData({ username: '', email: '', password: '' });
-        onClose();
+        onLogin({ username: formData.username || 'User', email: formData.email });
       } else {
         setError(result.error || 'حدث خطأ غير متوقع');
       }
