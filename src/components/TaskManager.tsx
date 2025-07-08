@@ -9,36 +9,33 @@ import TaskStats from "./TaskStats";
 import AuthModal from "./AuthModal";
 import ThemeToggle from "./ThemeToggle";
 import { Task, TaskPriority } from "@/types/Task";
-import { loadTasks, saveTasks, exportTasks, importTasks } from "@/utils/taskStorage";
+import { exportTasks, importTasks } from "@/utils/taskStorage";
 import { toast } from "@/components/ui/sonner";
+import { useSupabase } from "@/hooks/useSupabase";
 
 const TaskManager = () => {
+  const { user, loading, signIn, signUp, signOut, loadTasks, saveTask, deleteTask, updateTask } = useSupabase();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed' | 'today' | 'overdue'>('all');
   const [sortBy, setSortBy] = useState<'priority' | 'dueDate' | 'created'>('priority');
   const [searchQuery, setSearchQuery] = useState('');
-  const [user, setUser] = useState<{username: string, email: string} | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Load initial data
+  // Load tasks when user changes
   useEffect(() => {
-    const savedTasks = loadTasks();
-    const savedUser = localStorage.getItem('taskManager_user');
-    setTasks(savedTasks);
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    if (user) {
+      loadUserTasks();
+    } else {
+      setTasks([]);
     }
-  }, []);
+  }, [user]);
 
-  // Auto-save with debouncing
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      saveTasks(tasks);
-    }, 300);
-    return () => clearTimeout(timeoutId);
-  }, [tasks]);
+  const loadUserTasks = async () => {
+    const userTasks = await loadTasks();
+    setTasks(userTasks);
+  };
 
   // Check for overdue tasks and show notifications
   useEffect(() => {
@@ -57,56 +54,81 @@ const TaskManager = () => {
     }
   }, [tasks]);
 
-  const handleLogin = useCallback((userData: {username: string, email: string}) => {
-    setUser(userData);
-    localStorage.setItem('taskManager_user', JSON.stringify(userData));
-    setIsAuthModalOpen(false);
-    toast.success(`مرحباً ${userData.username}! 🎉`);
-  }, []);
+  const handleLogin = useCallback(async (userData: {username: string, email: string, password?: string}) => {
+    if (userData.password) {
+      // This is a sign in
+      await signIn(userData.email, userData.password);
+    } else {
+      // This is a sign up - we need to handle this differently
+      // For now, we'll just close the modal since the auth is handled in AuthModal
+      setIsAuthModalOpen(false);
+    }
+  }, [signIn]);
 
-  const handleLogout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem('taskManager_user');
-    toast.success('تم تسجيل الخروج بنجاح');
-  }, []);
+  const handleLogout = useCallback(async () => {
+    await signOut();
+    setTasks([]);
+  }, [signOut]);
 
-  const addTask = useCallback((newTask: Omit<Task, 'id' | 'completed' | 'createdAt'>) => {
-    const task: Task = {
+  const addTask = useCallback(async (newTask: Omit<Task, 'id' | 'completed' | 'createdAt'>) => {
+    const savedTask = await saveTask({
       ...newTask,
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-    setTasks(prev => [task, ...prev]);
-    toast.success('تم إضافة المهمة بنجاح ✅');
-  }, []);
+      completed: false
+    });
+    
+    if (savedTask) {
+      const task: Task = {
+        id: savedTask.id,
+        title: savedTask.title,
+        description: savedTask.description || '',
+        priority: savedTask.priority as TaskPriority,
+        dueDate: savedTask.deadline || undefined,
+        completed: savedTask.completed || false,
+        createdAt: savedTask.created_at
+      };
+      setTasks(prev => [task, ...prev]);
+      toast.success('تم إضافة المهمة بنجاح ✅');
+    }
+  }, [saveTask]);
 
-  const updateTask = useCallback((id: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(task => 
-      task.id === id ? { ...task, ...updates } : task
-    ));
-    toast.success('تم تحديث المهمة 📝');
-  }, []);
+  const updateTaskHandler = useCallback(async (id: string, updates: Partial<Task>) => {
+    const updatedTask = await updateTask(id, updates);
+    if (updatedTask) {
+      setTasks(prev => prev.map(task => 
+        task.id === id ? {
+          ...task,
+          title: updatedTask.title,
+          description: updatedTask.description || '',
+          priority: updatedTask.priority as TaskPriority,
+          dueDate: updatedTask.deadline || undefined,
+          completed: updatedTask.completed || false
+        } : task
+      ));
+      toast.success('تم تحديث المهمة 📝');
+    }
+  }, [updateTask]);
 
-  const deleteTask = useCallback((id: string) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
-    toast.success('تم حذف المهمة 🗑️');
-  }, []);
+  const deleteTaskHandler = useCallback(async (id: string) => {
+    const success = await deleteTask(id);
+    if (success) {
+      setTasks(prev => prev.filter(task => task.id !== id));
+      toast.success('تم حذف المهمة 🗑️');
+    }
+  }, [deleteTask]);
 
-  const toggleComplete = useCallback((id: string) => {
-    setTasks(prev => prev.map(task => {
-      if (task.id === id) {
-        const newCompleted = !task.completed;
-        if (newCompleted) {
-          toast.success('تم إكمال المهمة! 🎉', {
-            description: 'أحسنت! استمر في العمل الرائع',
-          });
-        }
-        return { ...task, completed: newCompleted };
+  const toggleComplete = useCallback(async (id: string) => {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      const newCompleted = !task.completed;
+      await updateTaskHandler(id, { completed: newCompleted });
+      
+      if (newCompleted) {
+        toast.success('تم إكمال المهمة! 🎉', {
+          description: 'أحسنت! استمر في العمل الرائع',
+        });
       }
-      return task;
-    }));
-  }, []);
+    }
+  }, [tasks, updateTaskHandler]);
 
   const handleExport = useCallback(() => {
     try {
@@ -120,8 +142,19 @@ const TaskManager = () => {
   const handleImport = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      importTasks(file, (importedTasks) => {
-        setTasks(prev => [...importedTasks, ...prev]);
+      importTasks(file, async (importedTasks) => {
+        // Save imported tasks to Supabase
+        for (const task of importedTasks) {
+          await saveTask({
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            dueDate: task.dueDate,
+            completed: task.completed
+          });
+        }
+        // Reload tasks from database
+        await loadUserTasks();
         toast.success(`تم استيراد ${importedTasks.length} مهمة بنجاح 📥`);
       }, (error) => {
         toast.error('فشل في استيراد المهام ❌');
@@ -129,7 +162,7 @@ const TaskManager = () => {
     }
     // Reset file input
     event.target.value = '';
-  }, []);
+  }, [saveTask, loadUserTasks]);
 
   // Enhanced filtering with new options
   const filteredTasks = useMemo(() => {
@@ -233,6 +266,17 @@ const TaskManager = () => {
 
   const todayQuote = motivationalQuotes[new Date().getDay() % motivationalQuotes.length];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -263,6 +307,8 @@ const TaskManager = () => {
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
           onLogin={handleLogin}
+          onSignUp={signUp}
+          onSignIn={signIn}
         />
       </div>
     );
@@ -575,8 +621,8 @@ const TaskManager = () => {
                   key={task.id}
                   task={task}
                   onToggleComplete={toggleComplete}
-                  onUpdate={updateTask}
-                  onDelete={deleteTask}
+                  onUpdate={updateTaskHandler}
+                  onDelete={deleteTaskHandler}
                 />
               ))}
             </div>
