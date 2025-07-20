@@ -53,14 +53,28 @@ export const importTasks = (
       
       // Validate each task has required fields
       const validTasks = importedTasks.filter(task => 
-        task.id && task.title && task.priority && task.createdAt
+        task.id && 
+        task.title && 
+        task.title.trim().length > 0 &&
+        task.priority && 
+        ['high', 'medium', 'low'].includes(task.priority) &&
+        task.createdAt &&
+        typeof task.completed === 'boolean'
       );
       
       if (validTasks.length === 0) {
         throw new Error('No valid tasks found in file');
       }
       
-      onSuccess(validTasks);
+      // Sanitize task data
+      const sanitizedTasks = validTasks.map(task => ({
+        ...task,
+        title: task.title.trim(),
+        description: task.description?.trim() || '',
+        dueDate: task.dueDate && task.dueDate.trim() ? task.dueDate : undefined
+      }));
+      
+      onSuccess(sanitizedTasks);
     } catch (error) {
       onError('Invalid file format or corrupted data');
     }
