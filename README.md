@@ -35,10 +35,33 @@ git clone https://github.com/HexveilX/daily-task-manager.git
 # Open the folder
 cd daily-task-manager
 
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env file with your Supabase credentials
+
+# Start the development server
+npm run dev
+
 # Open index.html in your browser (if using plain JS)
 # OR
 # Run your development server if using React (Vite / Create React App / etc.)
 ```
+
+## 🔑 Environment Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Copy your project URL and anon key
+3. Create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+4. Run the Supabase migrations to set up the database schema
 
 ---
 

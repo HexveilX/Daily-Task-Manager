@@ -92,6 +92,12 @@ export const useSupabase = () => {
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
+      // Check if Supabase is properly configured
+      if (!import.meta.env.VITE_SUPABASE_URL) {
+        toast.error('التطبيق غير مكون بشكل صحيح. يرجى إعداد متغيرات البيئة.');
+        return { success: false, error: 'التطبيق غير مكون بشكل صحيح' };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -123,6 +129,12 @@ export const useSupabase = () => {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Check if Supabase is properly configured
+      if (!import.meta.env.VITE_SUPABASE_URL) {
+        toast.error('التطبيق غير مكون بشكل صحيح. يرجى إعداد متغيرات البيئة.');
+        return { success: false, error: 'التطبيق غير مكون بشكل صحيح' };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
