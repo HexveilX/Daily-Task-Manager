@@ -73,7 +73,7 @@ const TaskForm = ({ initialData, onSubmit, onCancel, submitLabel }: TaskFormProp
         title: formData.title.trim(),
         description: formData.description.trim(),
         priority: formData.priority,
-        dueDate: formData.dueDate || undefined,
+        dueDate: formData.dueDate && formData.dueDate.trim() ? formData.dueDate : undefined,
       });
     } finally {
       setIsSubmitting(false);

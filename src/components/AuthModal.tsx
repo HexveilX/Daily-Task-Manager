@@ -25,6 +25,8 @@ const AuthModal = ({ isOpen, onClose, onLogin, onSignUp, onSignIn }: AuthModalPr
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic validation
     if (!formData.email.trim() || !formData.password.trim()) {
       setError('يرجى ملء جميع الحقول المطلوبة');
       return;
@@ -35,10 +37,18 @@ const AuthModal = ({ isOpen, onClose, onLogin, onSignUp, onSignIn }: AuthModalPr
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      setError('صيغة البريد الإلكتروني غير صحيحة');
+      return;
+    }
+
     if (formData.password.length < 6) {
       setError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
       return;
     }
+    
     setLoading(true);
     setError('');
 

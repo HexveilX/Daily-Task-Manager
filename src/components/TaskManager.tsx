@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Plus, Filter, SortAsc, Search, Download, Upload, Calendar, BarChart3, Menu, X, Settings, User, LogOut } from "lucide-react";
+import { Plus, Filter, SortAsc, Search, Download, Upload, Calendar, BarChart3, Menu, X, Settings, User, LogOut, Wifi, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,7 @@ import { toast } from "@/components/ui/sonner";
 import { useSupabase } from "@/hooks/useSupabase";
 
 const TaskManager = () => {
-  const { user, loading, signIn, signUp, signOut, loadTasks, saveTask, deleteTask, updateTask } = useSupabase();
+  const { user, loading, isOnline, signIn, signUp, signOut, loadTasks, saveTask, deleteTask, updateTask } = useSupabase();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -54,6 +54,17 @@ const TaskManager = () => {
     }
   }, [tasks]);
 
+  // Show offline indicator
+  useEffect(() => {
+    if (!isOnline) {
+      toast.error('لا يوجد اتصال بالإنترنت', {
+        duration: Infinity,
+        id: 'offline-toast'
+      });
+    } else {
+      toast.dismiss('offline-toast');
+    }
+  }, [isOnline]);
   const handleLogin = useCallback(async (userData: {username: string, email: string, password?: string}) => {
     // This callback is no longer needed since auth is handled in AuthModal
     // Just close the modal when called
@@ -279,6 +290,13 @@ const TaskManager = () => {
         <div className="absolute top-4 right-4">
           <ThemeToggle />
         </div>
+        {/* Offline indicator */}
+        {!isOnline && (
+          <div className="absolute top-4 left-4 flex items-center gap-2 bg-red-500 text-white px-3 py-2 rounded-lg">
+            <WifiOff className="w-4 h-4" />
+            <span className="text-sm">غير متصل</span>
+          </div>
+        )}
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 dark:border-gray-700 max-w-md w-full text-center">
           <div className="mb-6">
             <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
@@ -294,10 +312,14 @@ const TaskManager = () => {
           </div>
           <Button
             onClick={() => setIsAuthModalOpen(true)}
+            disabled={!isOnline}
             className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
           >
             تسجيل الدخول
           </Button>
+          {!isOnline && (
+            <p className="text-red-500 text-xs mt-2">يتطلب الاتصال بالإنترنت</p>
+          )}
         </div>
         <AuthModal
           isOpen={isAuthModalOpen}
@@ -325,6 +347,20 @@ const TaskManager = () => {
                 <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">مدير المهام</h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">مرحباً {user.username} 👋</p>
               </div>
+              {/* Online/Offline indicator */}
+              <div className="flex items-center gap-2">
+                {isOnline ? (
+                  <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                    <Wifi className="w-4 h-4" />
+                    <span className="text-xs hidden sm:inline">متصل</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                    <WifiOff className="w-4 h-4" />
+                    <span className="text-xs hidden sm:inline">غير متصل</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Desktop Controls */}
@@ -334,7 +370,7 @@ const TaskManager = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleExport}
-                disabled={tasks.length === 0}
+                disabled={tasks.length === 0 || !isOnline}
                 className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
               >
                 <Download className="w-4 h-4 mr-2" />
@@ -344,6 +380,7 @@ const TaskManager = () => {
                 <Button
                   variant="outline"
                   size="sm"
+                  disabled={!isOnline}
                   className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
                   asChild
                 >
@@ -356,6 +393,7 @@ const TaskManager = () => {
                   type="file"
                   accept=".json"
                   onChange={handleImport}
+                  disabled={!isOnline}
                   className="hidden"
                 />
               </label>
@@ -391,7 +429,7 @@ const TaskManager = () => {
                   variant="outline"
                   size="sm"
                   onClick={handleExport}
-                  disabled={tasks.length === 0}
+                  disabled={tasks.length === 0 || !isOnline}
                   className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 justify-start"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -401,6 +439,7 @@ const TaskManager = () => {
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={!isOnline}
                     className="border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 justify-start w-full"
                     asChild
                   >
@@ -413,6 +452,7 @@ const TaskManager = () => {
                     type="file"
                     accept=".json"
                     onChange={handleImport}
+                    disabled={!isOnline}
                     className="hidden"
                   />
                 </label>
@@ -565,6 +605,7 @@ const TaskManager = () => {
 
                 <Button
                   onClick={() => setIsAddModalOpen(true)}
+                  disabled={!isOnline}
                   className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -602,11 +643,15 @@ const TaskManager = () => {
                 {(filter === 'all' && !searchQuery) && (
                   <Button
                     onClick={() => setIsAddModalOpen(true)}
+                    disabled={!isOnline}
                     className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 dark:from-blue-600 dark:to-purple-700 dark:hover:from-blue-700 dark:hover:to-purple-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     أضف مهمتك الأولى
                   </Button>
+                )}
+                {!isOnline && (
+                  <p className="text-red-500 text-xs mt-2">يتطلب الاتصال بالإنترنت لإضافة المهام</p>
                 )}
               </div>
             </div>
